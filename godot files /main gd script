@@ -1,0 +1,29 @@
+extends Node2D
+
+var player_score := 0
+var ai_score := 0
+
+@onready var ball = $ball
+@onready var score_label = $UI/score
+@onready var left_goal = $leftgoal
+@onready var right_goal = $rightgoal
+
+func _ready():
+	left_goal.body_entered.connect(_on_left_goal_entered)
+	right_goal.body_entered.connect(_on_right_goal_entered)
+	update_score_label()
+
+func _on_left_goal_entered(body):
+	if body == ball:
+		ai_score += 1
+		update_score_label()
+		ball.reset_ball()
+
+func _on_right_goal_entered(body):
+	if body == ball:
+		player_score += 1
+		update_score_label()
+		ball.reset_ball()
+
+func update_score_label():
+	score_label.text = str(player_score) + " : " + str(ai_score)
