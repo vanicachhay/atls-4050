@@ -1,0 +1,27 @@
+extends CharacterBody2D
+
+@export var fall_speed := 270.0        # speed of falling
+@export var boost_strength := 110.0     # multiplies the peak gotten and is the jumpd
+@export var smoothing_speed := 9.0      # changes the smoothness of peaks and jumps
+@export var min_y := 60.0
+@export var max_y := 540.0
+
+var target_y := 300.0   
+
+func _ready():
+	target_y = position.y
+
+func _physics_process(delta):
+	var peak = UdpListener.consume_peak()
+
+
+	if peak > 0.0:
+		target_y -= peak * boost_strength
+
+	# gravity smoothing towards 300
+	target_y += fall_speed * delta
+	target_y = clamp(target_y, min_y, max_y)
+
+	# this gives the paddle smooth or shakiness
+	position.y = lerp(position.y, target_y, smoothing_speed * delta)
+	position.y = clamp(position.y, min_y, max_y)
