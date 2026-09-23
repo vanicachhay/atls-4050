@@ -1,0 +1,27 @@
+extends CharacterBody2D
+
+@export var speed := 300.0
+var direction := Vector2.ZERO
+@onready var hit_sound = $hitsound
+
+@export var speed_increment: float = 25.0
+@export var max_speed: float = 900.0
+
+
+func _ready():
+	reset_ball()
+
+func _physics_process(delta):
+	velocity = direction * speed
+	var collision = move_and_collide(velocity * delta)
+	if collision:
+		direction = direction.bounce(collision.get_normal())
+		speed = min(speed + speed_increment, max_speed)
+		hit_sound.play()
+
+func reset_ball():
+	position = Vector2(400, 300)
+	randomize()
+	var angle = randf_range(-0.5, 0.5)
+	var dir_x = 1 if randi() % 2 == 0 else -1
+	direction = Vector2(dir_x, angle).normalized()
