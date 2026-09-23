@@ -1,0 +1,20 @@
+extends CharacterBody2D
+
+@export var speed := 200.0
+@export var min_y := 60.0
+@export var max_y := 540.0
+@export var ball_path: NodePath
+
+var ball: Node2D
+
+func _ready():
+	ball = get_node(ball_path)
+
+func _physics_process(delta):
+	var pos = position
+	if ball.position.y > pos.y + 5:
+		pos.y += speed * delta
+	elif ball.position.y < pos.y - 5:
+		pos.y -= speed * delta
+	pos.y = clamp(pos.y, min_y, max_y)
+	position = pos
